@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "server:start": "node server.js",
+    "server:start": "node server",
     "server:dev": "node-dev --no-notify server"
   },
   "private": true,

@@ -23,6 +23,8 @@
     "@angular/router": "~10.0.2",
     "express": "^4.17.1",
     "express-validator": "^6.6.0",
+    "helmet": "^3.23.3",
+    "morgan": "^1.10.0",
     "node-fetch": "^2.6.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",

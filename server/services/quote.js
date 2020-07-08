@@ -1,5 +1,7 @@
 const fetch = require("node-fetch");
 const { query, validationResult } = require("express-validator");
+const UserError = require("../UserError");
+const ServerError = require("../ServerError");
 
 const exchangeApiUrl = "https://api.exchangeratesapi.io/latest";
 const supportedCurrencies = ["USD", "EUR", "ILS"];
@@ -39,7 +41,10 @@ module.exports = async function quoteService(req, res, next) {
     // if query input validation failed, send an error message to the client
     const validation = validationResult(req);
     if (!validation.isEmpty()) {
-      return res.status(422).json({ error: validation.array()[0].msg });
+      const firstValidationError = validation.array()[0];
+      throw new UserError(firstValidationError.msg, 422, {
+        field: firstValidationError.param,
+      });
     }
 
     // get the validated and sanitized query parameters
@@ -47,9 +52,10 @@ module.exports = async function quoteService(req, res, next) {
 
     // check if the base amount is in safe computable range
     if (!Number.isSafeInteger(base_amount)) {
-      return res.status(422).json({
-        error: `The base amount is too big, we can't correctly calculate the result. Try to use the value less than ${Number.MAX_SAFE_INTEGER}`,
-      });
+      throw new UserError(
+        `The base amount is too big, we can't correctly calculate the result. Try to use the value less than ${Number.MAX_SAFE_INTEGER}`,
+        422
+      );
     }
 
     // if base and quote currencies are the same, do not fetch any data, just return as the rate is equal 1
@@ -68,7 +74,7 @@ module.exports = async function quoteService(req, res, next) {
     if (!response.ok) {
       console.error(`Status code received from: ${fetchUrl}`, response.status);
       console.error(await response.json());
-      return res.status(503).json({ error: somethingWrongErrorMessage });
+      throw new ServerError(somethingWrongErrorMessage);
     }
 
     // try to get the rate from the response
@@ -79,7 +85,7 @@ module.exports = async function quoteService(req, res, next) {
     if (typeof exchange_rate !== "number") {
       console.error(`The unexpected response received from ${fetchUrl}`);
       console.error(data);
-      return res.status(503).json({ error: somethingWrongErrorMessage });
+      throw new ServerError(somethingWrongErrorMessage);
     }
 
     // calculate and round the quote amount to the integer
@@ -87,11 +93,12 @@ module.exports = async function quoteService(req, res, next) {
 
     // check if the result is in safe computable range
     if (!Number.isSafeInteger(quote_amount)) {
-      return res.status(422).json({
-        error: `The result is out of a safe computable range. Try to use base amount less than ${Math.floor(
+      throw new UserError(
+        `The result is out of a safe computable range. Try to use base amount less than ${Math.floor(
           base_amount / exchange_rate
         )}`,
-      });
+        422
+      );
     }
 
     // round exchange rate up to 3 decimal digits and return the result to the user

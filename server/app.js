@@ -3,6 +3,7 @@ const config = require("./config");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const routes = require("./routes");
+const BaseError = require("./BaseError");
 
 module.exports = function app() {
   const server = express();

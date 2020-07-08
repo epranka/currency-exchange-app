@@ -1,6 +1,5 @@
 const express = require("express");
 const apis = require("./apis");
-const BaseError = require("../BaseError");
 
 module.exports = function routesFactory(server) {
   const router = express.Router();

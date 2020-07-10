@@ -11,6 +11,7 @@ class BaseError extends Error {
       );
     }
     super(message, ...args);
+    this.name = this.type = "BaseError";
     this.message = message;
     this.status = status;
     this.loggable = false;

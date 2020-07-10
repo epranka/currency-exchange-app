@@ -1,9 +1,11 @@
 const BaseError = require("./BaseError");
 
 class ServerError extends BaseError {
-  constructor(message, status = 503) {
+  static defaultStatus = 503;
+  static name = "ServerError";
+  constructor(message, status = ServerError.defaultStatus) {
     super(message, status);
-    this.name = this.type = "ServerError";
+    this.name = this.type = ServerError.name;
     this.loggable = true;
   }
 }

@@ -3,20 +3,22 @@ const config = require("./config");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const routes = require("./routes");
-const BaseError = require("./BaseError");
+const BaseError = require("./errors/BaseError");
 
-module.exports = function app() {
-  const server = express();
+module.exports = function appFactory() {
+  const app = express();
+  let created = false;
+  let server;
 
-  server.set("static-path", config.staticPath);
+  app.set("static-path", config.staticPath);
 
   const create = () => {
-    server.use(helmet());
-    server.use(morgan(process.env.NODE_ENV === "production" ? "tiny" : "dev"));
+    app.use(helmet());
+    app.use(morgan(process.env.NODE_ENV === "production" ? "tiny" : "dev"));
 
-    server.use(routes(server));
+    app.use(routes(app));
 
-    server.use((err, req, res, next) => {
+    app.use((err, _req, res, next) => {
       if (err) {
         if (err instanceof BaseError) {
           return err.toResponse(res);
@@ -31,13 +33,36 @@ module.exports = function app() {
         return next();
       }
     });
+
+    created = true;
   };
 
   const start = () => {
-    server.listen(config.port, () => {
-      console.log("Application is listening on port", config.port);
+    if (!created) {
+      throw new Error("Use app.create() before the starting the server");
+    }
+    return new Promise((resolve, reject) => {
+      server = app.listen(config.port, (err) => {
+        if (err) return reject(err);
+        console.log("Application is listening on port", config.port);
+        return resolve();
+      });
     });
   };
 
-  return { create, start };
+  const close = () => {
+    if (!server) {
+      throw new Error(
+        "Cannot close the server. Probably it is not started yet"
+      );
+    }
+    return new Promise((resolve, reject) => {
+      server.close((err) => {
+        if (err) return reject(err);
+        return resolve();
+      });
+    });
+  };
+
+  return { create, start, close, app };
 };

@@ -9,7 +9,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "server:start": "node server",
-    "server:dev": "node-dev --no-notify server"
+    "server:dev": "node-dev --no-notify server",
+    "server:test": "NODE_ENV=test nyc mocha \"server/**/*.spec.js\""
   },
   "private": true,
   "dependencies": {
@@ -24,6 +25,7 @@
     "express": "^4.17.1",
     "express-validator": "^6.6.0",
     "helmet": "^3.23.3",
+    "memory-cache": "^0.2.0",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.0",
     "rxjs": "~6.5.5",
@@ -37,7 +39,9 @@
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
+    "chai": "^4.2.0",
     "codelyzer": "^6.0.0-next.1",
+    "fetch-mock": "^9.10.3",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~5.0.0",
@@ -45,8 +49,12 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~3.3.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "mocha": "^8.0.1",
     "node-dev": "^4.3.0",
+    "nyc": "^15.1.0",
     "protractor": "~7.0.0",
+    "sinon": "^9.0.2",
+    "supertest": "^4.0.2",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.5"

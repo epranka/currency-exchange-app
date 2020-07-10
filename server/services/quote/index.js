@@ -1,7 +1,7 @@
-const fetch = require("node-fetch");
+require("node-fetch");
 const { query, validationResult } = require("express-validator");
-const UserError = require("../UserError");
-const ServerError = require("../ServerError");
+const UserError = require("../../errors/UserError");
+const ServerError = require("../../errors/ServerError");
 
 const exchangeApiUrl = "https://api.exchangeratesapi.io/latest";
 const supportedCurrencies = ["USD", "EUR", "ILS"];
@@ -9,6 +9,35 @@ const supportedCurrenciesString = supportedCurrencies.join(", ");
 
 const somethingWrongErrorMessage =
   "Something wrong with the service. Try again later";
+
+// cache duration - 10s, in test environment - 1s
+const cacheDurationInMs =
+  process.env.NODE_ENV === "test" ? 1 * 1000 : 10 * 1000;
+const quotesCache = require("./quotesCache")(cacheDurationInMs);
+
+const calculateRate = (base_amount, exchange_rate) => {
+  // calculate and round the quote amount to the integer
+  const quote_amount = Math.round(base_amount * exchange_rate);
+
+  // check if the result is in safe computable range
+  if (!Number.isSafeInteger(quote_amount)) {
+    throw new UserError(
+      `The result is out of a safe computable range. Try to use base amount less than ${Math.floor(
+        base_amount / exchange_rate
+      )}`,
+      422
+    );
+  }
+  return quote_amount;
+};
+
+const createResponseJSON = (quote_amount, exchange_rate) => {
+  // round exchange rate up to 3 decimal digits
+  return {
+    exchange_rate: Math.round(exchange_rate * 1000) / 1000,
+    quote_amount,
+  };
+};
 
 module.exports = async function quoteService(req, res, next) {
   try {
@@ -66,6 +95,14 @@ module.exports = async function quoteService(req, res, next) {
       });
     }
 
+    // try to get the exchange rate from the cache
+    const cachedExchangeRate = quotesCache.get(base_currency, quote_currency);
+    if (typeof cachedExchangeRate === "number") {
+      // if the exchange rate is found in the cache, calculate quote amount and return the result to the client
+      const quote_amount = calculateRate(base_amount, cachedExchangeRate);
+      return res.json(createResponseJSON(quote_amount, cachedExchangeRate));
+    }
+
     // create a request URL and fetch the rates
     const fetchUrl = `${exchangeApiUrl}?base=${base_currency}&symbols=${quote_currency}`;
     const response = await fetch(fetchUrl);
@@ -88,24 +125,12 @@ module.exports = async function quoteService(req, res, next) {
       throw new ServerError(somethingWrongErrorMessage);
     }
 
-    // calculate and round the quote amount to the integer
-    const quote_amount = Math.round(base_amount * exchange_rate);
+    // put the exchange rate to the cache
+    quotesCache.put(base_currency, quote_currency, exchange_rate);
 
-    // check if the result is in safe computable range
-    if (!Number.isSafeInteger(quote_amount)) {
-      throw new UserError(
-        `The result is out of a safe computable range. Try to use base amount less than ${Math.floor(
-          base_amount / exchange_rate
-        )}`,
-        422
-      );
-    }
-
-    // round exchange rate up to 3 decimal digits and return the result to the user
-    return res.json({
-      exchange_rate: Math.round(exchange_rate * 1000) / 1000,
-      quote_amount,
-    });
+    // calculate quote amount and return the result to the client
+    const quote_amount = calculateRate(base_amount, exchange_rate);
+    return res.json(createResponseJSON(quote_amount, exchange_rate));
   } catch (err) {
     // return an unexpected error
     return next(err);

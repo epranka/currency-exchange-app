@@ -1,14 +1,16 @@
 const BaseError = require("./BaseError");
 
 class UserError extends BaseError {
-  constructor(message, status = 400, payload) {
+  static name = "UserError";
+  static defaultStatus = 400;
+  constructor(message, status = UserError.defaultStatus, payload) {
     super(message, status);
     if (payload && typeof payload !== "object") {
       throw new Error(
         `Third parameter 'payload' must be an undefined or an object in UserError constructor. Got: ${typeof payload}`
       );
     }
-    this.name = this.type = "UserError";
+    this.name = this.type = UserError.name;
     this.payload = payload;
   }
 

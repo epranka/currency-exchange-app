@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - test-action
 
 env:
   PROJECT_ID: ${{ secrets.RUN_PROJECT }}

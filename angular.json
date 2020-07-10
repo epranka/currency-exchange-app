@@ -25,6 +25,7 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
+              "src/social.jpg",
               "src/animation.gif",
               "src/android-chrome-192x192.png",
               "src/android-chrome-512x512.png",
@@ -95,6 +96,7 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
+              "src/social.jpg",
               "src/animation.gif",
               "src/android-chrome-192x192.png",
               "src/android-chrome-512x512.png",

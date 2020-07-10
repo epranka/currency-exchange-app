@@ -20,6 +20,12 @@
 
 > Check live version: [exchange.pranka.lt](https://exchange.pranka.lt/)
 
+<p align="center">
+    <img src="https://exchange.pranka.lt/animation.gif" alt="exchange the rate application animation" />
+</p>
+
+</hr>
+
 ## Development server
 
 Run `npm run dev` for a Angular.js development server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.

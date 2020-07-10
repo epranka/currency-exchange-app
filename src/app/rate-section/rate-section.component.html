@@ -1,0 +1,27 @@
+<div class="rate-section-container">
+  <div class="currencies-selector-container">
+    <div class="currency-selector">
+      <app-currency-selector
+        name="base"
+        label="Base"
+        [value]="exchange.base_currency"
+        [currencies]="supportedCurrencies"
+        (changed)="handleBaseCurrencyChange($event)"
+      ></app-currency-selector>
+    </div>
+    <div class="currency-selector">
+      <app-currency-selector
+        name="quote"
+        label="Quote"
+        [value]="exchange.quote_currency"
+        [currencies]="supportedCurrencies"
+        (changed)="handleQuoteCurrencyChange($event)"
+      ></app-currency-selector>
+    </div>
+  </div>
+  <div class="base-amount-container">
+    <app-base-amount
+      (changed)="handleBaseAmount($event[0], $event[1])"
+    ></app-base-amount>
+  </div>
+</div>

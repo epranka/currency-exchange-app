@@ -1,0 +1,13 @@
+<div class="base-amount-container">
+  <div class="base-amount">
+    <label for="base-amount">Amount</label>
+    <input
+      id="base-amount"
+      [(ngModel)]="value"
+      (keyup)="validateInput($event)"
+      (blur)="sanitizeInput($event)"
+      [class.base-amount-invalid]="isValid === false"
+      type="text"
+    />
+  </div>
+</div>

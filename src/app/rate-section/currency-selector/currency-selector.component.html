@@ -1,0 +1,11 @@
+<div class="currency-selector-container">
+  <div class="currency-selector">
+    <label for="currency-selector-{{ name }}">{{ label }}</label>
+    <ng-select
+      [items]="currencies"
+      [(ngModel)]="value"
+      [clearable]="false"
+      (change)="handleChange(value)"
+    ></ng-select>
+  </div>
+</div>

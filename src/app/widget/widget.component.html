@@ -1,0 +1,16 @@
+<div class="widget-container">
+  <app-loading-bar [isLoading]="isLoading"></app-loading-bar>
+  <app-rate-section
+    [exchange]="exchange"
+    [supportedCurrencies]="supportedCurrencies"
+    (changed)="handleChange($event)"
+  ></app-rate-section>
+  <div *ngIf="error !== false" class="fetch-error">
+    {{ error }}
+  </div>
+  <app-results-section
+    *ngIf="exchangeResult"
+    [exchange_rate]="exchangeResult.exchange_rate"
+    [quote_amount]="exchangeResult.quote_amount"
+  ></app-results-section>
+</div>

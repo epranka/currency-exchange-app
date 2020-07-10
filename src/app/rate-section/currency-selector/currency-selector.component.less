@@ -1,0 +1,57 @@
+@import "../../../_variables.less";
+
+.currency-selector-container {
+  position: relative;
+  color: @text-color;
+
+  label {
+    z-index: 2;
+    position: absolute;
+    color: @text-color;
+    background: @dark-background;
+    text-transform: uppercase;
+    font-size: 10px;
+    top: -4px;
+    left: 9px;
+    padding: 0 12px;
+  }
+
+  ::ng-deep .ng-select {
+    z-index: 1;
+    position: relative;
+    .ng-select-container {
+      background: @dark-background;
+      color: @text-color;
+      height: auto;
+      padding: 20px 0 20px 10px;
+      font-size: 22px;
+      border: 1px solid @text-color !important;
+      border-radius: 0px;
+    }
+
+    .ng-option {
+      background: @dark-background;
+      color: @text-color;
+      padding: 15px 20px;
+    }
+
+    .ng-option.ng-option-selected {
+      background: @dark-background;
+      color: @text-color;
+    }
+
+    .ng-option:hover {
+      background: @action-dark-background;
+    }
+
+    .ng-dropdown-panel {
+      border-radius: 0;
+    }
+
+    .ng-dropdown-panel.ng-select-bottom
+      .ng-dropdown-panel-items
+      .ng-option:last-child {
+      border-radius: 0;
+    }
+  }
+}

@@ -1,0 +1,72 @@
+@import "../_variables.less";
+
+.app-container {
+  max-width: 320px;
+  margin: 0 auto;
+  margin-top: 60px;
+  padding-left: 40px;
+
+  @media (min-width: 576px) {
+    margin-top: 100px;
+  }
+
+  @media (min-width: 1366px) {
+    margin-top: 120px;
+  }
+
+  @media (min-width: 1400px) {
+    margin-top: 140px;
+  }
+
+  h1 {
+    padding: 10px;
+    color: @text-color;
+    font-size: 52px;
+    margin: 0;
+  }
+}
+
+.copyright-container {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 30px;
+  background: white;
+
+  .icon {
+    margin-top: 10px;
+    margin-left: 5px;
+    width: 20px;
+    height: 20px;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .copyright {
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 12px;
+    transform: rotate(90deg) translate(20px, -22px);
+    transform-origin: top left;
+
+    a {
+      cursor: pointer;
+      color: black;
+      letter-spacing: 1px;
+    }
+  }
+
+  .year {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-weight: bold;
+    font-size: 12px;
+    transform: rotate(90deg) translate(-35px, -7px);
+    transform-origin: bottom left;
+  }
+}

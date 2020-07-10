@@ -1,4 +1,5 @@
-require("node-fetch");
+global.fetch = require("node-fetch");
+
 const { query, validationResult } = require("express-validator");
 const UserError = require("../../errors/UserError");
 const ServerError = require("../../errors/ServerError");

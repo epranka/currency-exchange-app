@@ -33,6 +33,7 @@ export class WidgetComponent implements OnInit {
 
     if (exchange.isValid && exchange.base_amount) {
       if (exchange.base_currency === exchange.quote_currency) {
+        this.error = false;
         this.exchangeResult = {
           exchange_rate: 1,
           quote_amount: parseInt(exchange.base_amount),

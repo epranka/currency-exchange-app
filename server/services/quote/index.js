@@ -24,7 +24,7 @@ const calculateRate = (base_amount, exchange_rate) => {
   if (!Number.isSafeInteger(quote_amount)) {
     throw new UserError(
       `The result is out of a safe computable range. Try to use base amount less than ${Math.floor(
-        base_amount / exchange_rate
+        base_amount / exchange_rate / 100
       )}`,
       422
     );
@@ -83,7 +83,9 @@ module.exports = async function quoteService(req, res, next) {
     // check if the base amount is in safe computable range
     if (!Number.isSafeInteger(base_amount)) {
       throw new UserError(
-        `The base amount is too big, we can't correctly calculate the result. Try to use the value less than ${Number.MAX_SAFE_INTEGER}`,
+        `The base amount is too big, we can't correctly calculate the result. Try to use the value less than ${Math.floor(
+          Number.MAX_SAFE_INTEGER / 100
+        )}`,
         422
       );
     }
